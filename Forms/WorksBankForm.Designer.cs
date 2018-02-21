@@ -34,6 +34,8 @@
             this.FileLoad = new System.Windows.Forms.ListBox();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.label1 = new System.Windows.Forms.Label();
+            this.TempUploadButton = new System.Windows.Forms.Button();
             this.label3 = new System.Windows.Forms.Label();
             this.loadMineTablebutton = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
@@ -94,6 +96,8 @@
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.label1);
+            this.tabPage1.Controls.Add(this.TempUploadButton);
             this.tabPage1.Controls.Add(this.label3);
             this.tabPage1.Controls.Add(this.loadMineTablebutton);
             this.tabPage1.Controls.Add(this.label2);
@@ -107,11 +111,32 @@
             this.tabPage1.Text = "Сбербанк";
             this.tabPage1.UseVisualStyleBackColor = true;
             // 
+            // label1
+            // 
+            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(6, 24);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(191, 13);
+            this.label1.TabIndex = 13;
+            this.label1.Text = "Формирование временной таблицы";
+            // 
+            // TempUploadButton
+            // 
+            this.TempUploadButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.TempUploadButton.Location = new System.Drawing.Point(50, 42);
+            this.TempUploadButton.Name = "TempUploadButton";
+            this.TempUploadButton.Size = new System.Drawing.Size(93, 23);
+            this.TempUploadButton.TabIndex = 12;
+            this.TempUploadButton.Text = "Загрузить";
+            this.TempUploadButton.UseVisualStyleBackColor = true;
+            this.TempUploadButton.Click += new System.EventHandler(this.TempUploadButton_Click);
+            // 
             // label3
             // 
             this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(20, 93);
+            this.label3.Location = new System.Drawing.Point(20, 125);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(158, 13);
             this.label3.TabIndex = 10;
@@ -120,7 +145,7 @@
             // loadMineTablebutton
             // 
             this.loadMineTablebutton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.loadMineTablebutton.Location = new System.Drawing.Point(50, 125);
+            this.loadMineTablebutton.Location = new System.Drawing.Point(50, 141);
             this.loadMineTablebutton.Name = "loadMineTablebutton";
             this.loadMineTablebutton.Size = new System.Drawing.Size(93, 23);
             this.loadMineTablebutton.TabIndex = 9;
@@ -132,20 +157,20 @@
             // 
             this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(3, 29);
+            this.label2.Location = new System.Drawing.Point(6, 74);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(191, 13);
+            this.label2.Size = new System.Drawing.Size(189, 13);
             this.label2.TabIndex = 8;
-            this.label2.Text = "Формирование временной таблицы";
+            this.label2.Text = "Загрузка в промежуточную таблицу";
             // 
             // SaveTable
             // 
             this.SaveTable.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.SaveTable.Location = new System.Drawing.Point(50, 54);
+            this.SaveTable.Location = new System.Drawing.Point(50, 96);
             this.SaveTable.Name = "SaveTable";
             this.SaveTable.Size = new System.Drawing.Size(93, 23);
             this.SaveTable.TabIndex = 4;
-            this.SaveTable.Text = "Сформировать";
+            this.SaveTable.Text = "Загрузить";
             this.SaveTable.UseVisualStyleBackColor = true;
             this.SaveTable.Click += new System.EventHandler(this.SaveTable_Click);
             // 
@@ -288,5 +313,7 @@
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Timer procesTimer;
         private System.Windows.Forms.BindingSource dataBinding;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Button TempUploadButton;
     }
 }

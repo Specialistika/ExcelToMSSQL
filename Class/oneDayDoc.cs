@@ -6,101 +6,198 @@ using Load_bank_files.Class.config;
 using System.Collections.Generic;
 using Load_bank_files.Forms;
 using Load_bank_files.Class.DataOneDoc;
-using System.Threading;
+using System.Windows.Forms;
+using System.Threading.Tasks;
 
 namespace Load_bank_files.Class.DayDoc
 {
-    public class oneDaydoc
+	public partial class oneDaydoc
     {
-        public static void oneDayfiles(string filesnames)
-        {
-            string fileName = null;
-            string pageCount = null;
-            Workbook workbook = new Spire.Xls.Workbook();
-            string files = Convert.ToString(Path.GetFullPath(filesnames));
-            string nameFiles = Convert.ToString(Path.GetFileName(filesnames));
-            workbook.LoadFromFile(files);
+		private static oneDayFiles dayFiles = oneDayFiles.GetInstance();
 
-            Worksheet sheet = workbook.Worksheets[0];
+		public static void OneDayfiles(string filesnames)
+		{
+			String pageCount = null;
+			string loadFiles = null;
+			Workbook workbook = new Spire.Xls.Workbook();
+			string fileName = variable_config.sbNewFormat + "tempSBfile.xlsx";
+			string files = Convert.ToString(Path.GetFullPath(filesnames));
+			string PathDir = Convert.ToString(Path.GetDirectoryName(filesnames));
+			string nameFiles = Convert.ToString(Path.GetFileName(filesnames));
+			string nameFilesOnly = Convert.ToString(Path.GetFileNameWithoutExtension(filesnames));
+			if (nameFiles.EndsWith(".xls"))
+			{
+				Microsoft.Office.Interop.Excel.Application excelApp = new Microsoft.Office.Interop.Excel.Application();
+				excelApp.Visible = false;
+				Microsoft.Office.Interop.Excel.Workbook eWorkbook = excelApp.Workbooks.Open(files, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
+				eWorkbook.SaveAs(PathDir + "\\" + nameFilesOnly + ".xlsx", Microsoft.Office.Interop.Excel.XlFileFormat.xlOpenXMLWorkbook, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Microsoft.Office.Interop.Excel.XlSaveAsAccessMode.xlNoChange, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
+				eWorkbook.Close(false, Type.Missing, Type.Missing);
+				loadFiles = PathDir + "\\" + nameFilesOnly + ".xlsx";
+			}
+			else
+			{
+				loadFiles = files;
+			}
+			try
+			{
+				workbook.LoadFromFile(loadFiles);
+			}
+			catch (Exception e)
+			{
+				MessageBox.Show(e.ToString());
+			}
+			Worksheet sheet = workbook.Worksheets[0];
 
-            for (int i = 1; i < 9; i++)
-            {
-                sheet.DeleteRow(i);
-            }
-            for (int i = 1; i < 3; i++)
-            {
-                sheet.DeleteRow(i);
-            }
+			#region формат однодневок сб
+			if (MineGenegalForms.TypeFile_ == 1)
+			{
+				for (int i = 1; i < 9; i++)
+				{
+					sheet.DeleteRow(i);
+				}
+				for (int i = 1; i < 3; i++)
+				{
+					sheet.DeleteRow(i);
+				}
 
-            CellRange[] rangesHole = sheet.FindAllString("О", false, false);
+				CellRange[] rangesHole = sheet.FindAllString("О", false, false);
 
-            foreach (CellRange range in rangesHole)
-            {
-                sheet.DeleteRow(range.Row);
-            }
+				foreach (CellRange range in rangesHole)
+				{
+					sheet.DeleteRow(range.Row);
+				}
 
-            CellRange[] rangesString = sheet.FindAllString("----------------", false, false);
+				CellRange[] rangesString = sheet.FindAllString("----------------", false, false);
 
-            foreach (CellRange range in rangesString)
-            {
-                sheet.DeleteRow(range.Row);
-            }
+				foreach (CellRange range in rangesString)
+				{
+					sheet.DeleteRow(range.Row);
+				}
 
-            CellRange[] rangesSymbol = sheet.FindAllString("Итог", false, false);
+				CellRange[] rangesSymbol = sheet.FindAllString("Итог", false, false);
 
-            foreach (CellRange range in rangesSymbol)
-            {
-                sheet.DeleteRow(range.Row);
-            }
+				foreach (CellRange range in rangesSymbol)
+				{
+					sheet.DeleteRow(range.Row);
+				}
 
-            sheet.DeleteRow(1);
+				sheet.DeleteRow(1);
 
-            sheet.InsertRow(1);
-            sheet.Range["A1"].Value = "TimeT";
-            sheet.Range["B1"].Value = "DateT";
-            sheet.Range["C1"].Value = "Terminal";
-            sheet.Range["D1"].Value = "Cardnum";
-            sheet.Range["E1"].Value = "AutCode";
-            sheet.Range["F1"].Value = "Sum";
-            sheet.Range["G1"].Value = "Comis";
-            sheet.Range["H1"].Value = "RRN";
 
-            sheet.Name = "List1";
+				sheet.InsertRow(1);
+				sheet.Range["A1"].Value = "TimeT";
+				sheet.Range["B1"].Value = "DateT";
+				sheet.Range["C1"].Value = "Terminal";
+				sheet.Range["D1"].Value = "Cardnum";
+				sheet.Range["E1"].Value = "AutCode";
+				sheet.Range["F1"].Value = "Sum";
+				sheet.Range["G1"].Value = "Comis";
+				sheet.Range["H1"].Value = "RRN";
+			}
+			#endregion
+			#region формат банка сб
+			if (MineGenegalForms.TypeFile_ == 2)
+			{
+				CellRange[] finalSymbol = sheet.FindAllString("Итог", false, false);
 
-            workbook.SaveToFile(variable_config.sb_new_format + "tempSBfile.xlsx", ExcelVersion.Version2010);
+				foreach (CellRange range in finalSymbol)
+				{
+					sheet.DeleteRow(range.Row);
+				}
+				#region удаление группировки (кушает только несколько строк)
+				/*
+				CellRange[] groupSymbol = sheet.FindAllString("Группировка", false, false);
+				int i = 0;
+				int lenght = groupSymbol.Length;
 
-            fileName = variable_config.sb_new_format + "tempSBfile.xlsx";
+				do
+				{
+					groupSymbol = sheet.FindAllString("Группировка", false, false);
+					//lenght = groupSymbol.Length;
+					i = --lenght;
 
-            deleteEmpty(fileName);
 
-            pageCount = countSheet(sheet);
+					CellRange range = groupSymbol[i];
+					sheet.DeleteRow(range.Row);
+				} while (i > 1);
+				*/
+				#endregion
+				sheet.InsertRow(1);
+				sheet.Range["I1"].Value = "TimeT";
+				sheet.Range["J1"].Value = "DateT";
+				sheet.Range["H1"].Value = "Terminal";
+				sheet.Range["U1"].Value = "Cardnum";
+				sheet.Range["V1"].Value = "AutCode";
+				sheet.Range["K1"].Value = "Sum";
+				sheet.Range["L1"].Value = "Comis";
+				sheet.Range["M1"].Value = "RRN";
+			}
+			#endregion
+			#region формат стандартных файлов сб
+			if (MineGenegalForms.TypeFile_ == 3)
+			{
+				sheet.DeleteRow(1);
+				sheet.InsertRow(1);
+				sheet.Range["G1"].Value = "TimeT";
+				sheet.Range["N1"].Value = "DateT";
+				sheet.Range["F1"].Value = "Terminal";
+				sheet.Range["K1"].Value = "Cardnum";
+				sheet.Range["L1"].Value = "AutCode";
+				sheet.Range["I1"].Value = "Sum";
+				sheet.Range["J1"].Value = "Comis";
+				sheet.Range["D1"].Value = "RRN";
+			}
+			#endregion
+			#region формат стандартных файлов ГПБ
+			if (MineGenegalForms.TypeFile_ == 4 || MineGenegalForms.TypeFile_ == 5)
+			{
+				sheet.InsertRow(1);
+				sheet.Range["A1"].Value = "Terminal";
+				sheet.Range["B1"].Value = "Cardnum";
+				sheet.Range["C1"].Value = "Sum";
+				sheet.Range["D1"].Value = "Comis";
+				sheet.Range["E1"].Value = "TimeT";
+				sheet.Range["F1"].Value = "Status";
+				sheet.Range["G1"].Value = "Typ";
+				sheet.Range["H1"].Value = "PS";
+				sheet.Range["I1"].Value = "AutCode";
+				sheet.Range["J1"].Value = "Emitent";
+			}
+			#endregion
 
-            oneDayFiles dayFiles = oneDayFiles.GetInstance();
-            dayFiles.SampleFunction(pageCount, nameFiles);
+			sheet.Name = "List1";
 
-            dateOneDocSB.SaveToTempbase(fileName);
-        }
+			workbook.SaveToFile(fileName, ExcelVersion.Version2010);
 
-        private static void deleteEmpty(string fileName)
-        {
-            Workbook workbook = new Workbook();
-            
-            workbook.LoadFromFile(fileName);
-            List<string> Worksheetname = new List<string>();
+			deleteEmpty(fileName);
 
-            var results = GetAllWorksheets(fileName);
+			pageCount = countSheet(sheet);
 
-            foreach (Worksheet item in results)
-            {
-                Worksheetname.Add(item.Name);
-            }
+			dayFiles.SampleFunction(pageCount, nameFiles);
 
-            workbook.Worksheets.Remove(Worksheetname[1].ToString());
+			dateOneDocSB.SaveToTempbase(fileName);
+		}
+		/* удаление пустых строк */
+		private static void deleteEmpty(string fileName) 
+		{
+			Workbook workbook = new Workbook();
 
-            workbook.SaveToFile(variable_config.sb_new_format + "sampless.xlsx", ExcelVersion.Version2010);
-        }
+			workbook.LoadFromFile(fileName);
+			List<string> Worksheetname = new List<string>();
 
-        private static WorksheetsCollection GetAllWorksheets(string fileName)
+			var results = GetAllWorksheets(fileName);
+
+			foreach (Worksheet item in results)
+			{
+				Worksheetname.Add(item.Name);
+			}
+
+			workbook.Worksheets.Remove(Worksheetname[1].ToString());
+
+			workbook.SaveToFile(fileName, ExcelVersion.Version2010);
+		}
+
+		private static WorksheetsCollection GetAllWorksheets(string fileName)
         {
             Workbook workbook = new Workbook();
             workbook.LoadFromFile(fileName);
@@ -109,7 +206,7 @@ namespace Load_bank_files.Class.DayDoc
         }
         private static string countSheet(Worksheet sheet)
         {
-            int rowCount = sheet.LastRow-1;
+			int rowCount = sheet.LastRow-1;
             int columnCount = sheet.LastColumn;
             CellRange lastCell = null;
             for (int i = rowCount; i >= 1; i--)
@@ -129,8 +226,7 @@ namespace Load_bank_files.Class.DayDoc
                     }
                 }
             }
-            return lastCell.Row.ToString();
-        }
-
+			return lastCell.Row.ToString();
+		}
     }
 }

@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
+﻿using Load_bank_files.Class.config;
+using System;
+using System.Configuration;
 using System.IO;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Load_bank_files.Forms
@@ -14,11 +10,7 @@ namespace Load_bank_files.Forms
     public partial class Service_Form : Form
     {
         private static Service_Form _services = null;
-        public string fildirectory;
-        public string fildirectoryout;
-        public string connectionstring;
-        public string configfiledir = "Serviceinfo.ini";
-        Array lines = Array.CreateInstance(typeof(string), 4);
+
         public static Service_Form GetInstance()
         {
             if (_services == null)
@@ -26,118 +18,216 @@ namespace Load_bank_files.Forms
 
             return _services;
         }
-        public Service_Form()
+		public Service_Form() => InitializeComponent();
+
+
+		private void Service_Form_Load(object sender, EventArgs e)
         {
-            InitializeComponent();
-        }
-
-
-        private void Service_Form_Load(object sender, EventArgs e)
-        {
-            int i = 0;
-
-            using (StreamReader sr = new StreamReader(configfiledir))
-            {
-                try
-                {
-                    while (true)
-                    {
-                        string line_text = sr.ReadLine();
-                        if (line_text == "") break;
-                        lines.SetValue(line_text, i);
-                        i++;
-                    }
-                    sr.Close();
-                }
-                catch (Exception b)
-                {
-                    Console.WriteLine("Exception: " + b.Message);
-                }
-                finally
-                {
-                    Console.WriteLine("Executing finally block.");
-                }
-                if (lines != null)
-                {
-                    path_bank.Text = Convert.ToString(lines.GetValue(0));
-                    path_sap.Text = Convert.ToString(lines.GetValue(1));
-                    path_con.Text = Convert.ToString(lines.GetValue(2));
-                }
-            }
-        }
-
-        private void save_btn_Click(object sender, EventArgs e)
-        {
-            int i = 0;
-            int f = 0;
-            Array.Clear(lines, 0, lines.Length);
-            lines.SetValue(path_bank.Text, 0);
-            lines.SetValue(path_sap.Text, 1);
-            lines.SetValue(path_con.Text, 2);
-
-            using (var stream = new FileStream(configfiledir, FileMode.Truncate))
-            {
-                using (var writer = new StreamWriter(stream))
-                {
-                    writer.Write("");
-                }
-            }
-            try
-            {
-                while (i<2)
-                {
-                    if (Directory.Exists(Convert.ToString(lines.GetValue(i)))) i++;
-                    switch (i)
-                    {
-                        case 0:
-                            for (f = 0; f <= (Bank_checkedListBox.Items.Count - 1); f++)
-                            {
-                                if (Bank_checkedListBox.GetItemChecked(f))
-                                {
-                                    DirectoryInfo d_bank = Directory.CreateDirectory(Convert.ToString(lines.GetValue(i)) + Convert.ToString(f+1));
-                                }
-                            }
-                                break;
-                        case 1:
-                            DirectoryInfo d_sap = Directory.CreateDirectory(Convert.ToString(lines.GetValue(i)));
-                            break;
-                    }
-                }
-            }
-            catch (Exception b)
-            {
-                Console.WriteLine("The process failed: {0}", b.ToString());
-            } 
-
-            using (StreamWriter sw = new StreamWriter(configfiledir, true, Encoding.ASCII))
-            {
-                i = 0;
-                try
-                {
-                    while (true)
-                    {
-                        if (lines.GetValue(i) == null) break;
-                        sw.WriteLine(Convert.ToString(lines.GetValue(i)));
-                        i++;
-                    }
-                    sw.Close();
-                }
-
-                catch (Exception b)
-                {
-                    Console.WriteLine("Ошибка:" + b.Message);
-                }
-                finally
-                {
-                    Console.WriteLine("Executing finally block.");
-                }
-            }
-            this.Close();
+            uploadDir();
+			this.Text = "Опции";
         }
 
         private void tab_closed_Click(object sender, EventArgs e)
         {
             this.Close();
         }
-    }
+
+        private void uploadDir()
+        {
+            uploadDirTextBox.ReadOnly = true;
+            uploadDirTextBox.Text = variable_config.dirUploadFiles;
+
+            connStringTextBox.ReadOnly = true;
+            connStringTextBox.Text = variable_config.ConnectionLocal;
+
+			connectionBaseTextBox.ReadOnly = true;
+			connectionBaseTextBox.Text = variable_config.ConnStrgingBase;
+
+			yearTextBox.ReadOnly = true;
+            yearTextBox.Text = variable_config.year;
+
+            monthTextBox.ReadOnly = true;
+            monthTextBox.Text = variable_config.month;
+
+            timeTextBox.ReadOnly = true;
+            timeTextBox.Text = variable_config.timerProgressbar.ToString();
+
+			expantionTextBox.ReadOnly = true;
+			expantionTextBox.Text = variable_config.GetexpansionFile.ToString();
+
+			pathSAPtextBox.ReadOnly = true;
+			pathSAPtextBox.Text = variable_config.directorySAP;
+		}
+
+        static void AddUpdateAppSettings(string key, string value)
+        {
+            try
+            {
+                var configFile = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+                var settings = configFile.AppSettings.Settings;
+                if (settings[key] == null)
+                {
+                    settings.Add(key, value);
+                }
+                else
+                {
+                    settings[key].Value = value;
+                }
+                configFile.Save(ConfigurationSaveMode.Modified);
+                ConfigurationManager.RefreshSection(configFile.AppSettings.SectionInformation.Name);
+            }
+            catch (ConfigurationErrorsException)
+            {
+                Console.WriteLine("Ошибка сохранения файла конфигурации");
+            }
+        }
+
+		private void uploadDirTextBox_DoubleClick(object sender, EventArgs e) => uploadDirTextBox.ReadOnly = false;
+
+		private void connStringTextBox_DoubleClick(object sender, EventArgs e) => connStringTextBox.ReadOnly = false;
+
+		private void yearTextBox_DoubleClick(object sender, EventArgs e) => yearTextBox.ReadOnly = false;
+
+		private void monthTextBox_DoubleClick(object sender, EventArgs e) => monthTextBox.ReadOnly = false;
+
+		private void timeTextBox_DoubleClick(object sender, EventArgs e) => timeTextBox.ReadOnly = false;
+
+		private void connectionBaseTextBox_DoubleClick_1(object sender, EventArgs e) => connectionBaseTextBox.ReadOnly = false;
+
+		private void expantionTextBox_DoubleClick(object sender, EventArgs e) => expantionTextBox.ReadOnly = false;
+
+		private void pathSAPtextBox_DoubleClick_1(object sender, EventArgs e) => pathSAPtextBox.ReadOnly = false;
+
+		private void uploadDirTextBox_KeyDown(object sender, KeyEventArgs e)
+		{
+			if (e.KeyCode == Keys.Enter)
+			{
+				AddUpdateAppSettings("dirUploadFiles", uploadDirTextBox.Text);
+				uploadDirTextBox.ReadOnly = true;
+			}
+			else if (e.KeyCode == Keys.Escape)
+			{
+				uploadDirTextBox.Undo();
+				uploadDirTextBox.ClearUndo();
+				uploadDirTextBox.ReadOnly = true;
+			}
+		}
+
+		private void connStringTextBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                AddUpdateAppSettings("Load_bank_files.Properties.Settings.localConn", connStringTextBox.Text);
+                connStringTextBox.ReadOnly = true;
+            }
+            else if (e.KeyCode == Keys.Escape)
+            {
+                connStringTextBox.Undo();
+                connStringTextBox.ClearUndo();
+                connStringTextBox.ReadOnly = true;
+            }
+        }
+
+        private void yearTextBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                AddUpdateAppSettings("year", yearTextBox.Text);
+                yearTextBox.ReadOnly = true;
+            }
+            else if (e.KeyCode == Keys.Escape)
+            {
+                yearTextBox.Undo();
+                yearTextBox.ClearUndo();
+                yearTextBox.ReadOnly = true;
+            }
+        }
+
+        private void monthTextBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                AddUpdateAppSettings("month", monthTextBox.Text);
+                monthTextBox.ReadOnly = true;
+            }
+            else if (e.KeyCode == Keys.Escape)
+            {
+                monthTextBox.Undo();
+                monthTextBox.ClearUndo();
+                monthTextBox.ReadOnly = true;
+            }
+        }
+
+        private void timeTextBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                AddUpdateAppSettings("timerProgressbar", timeTextBox.Text);
+                timeTextBox.ReadOnly = true;
+            }
+            else if (e.KeyCode == Keys.Escape)
+            {
+                timeTextBox.Undo();
+                timeTextBox.ClearUndo();
+                timeTextBox.ReadOnly = true;
+            }
+        }
+
+		private void connectionBaseTextBox_KeyDown_1(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                AddUpdateAppSettings("ConnStrg", connectionBaseTextBox.Text);
+                connectionBaseTextBox.ReadOnly = true;
+            }
+            else if (e.KeyCode == Keys.Escape)
+            {
+                connectionBaseTextBox.Undo();
+                connectionBaseTextBox.ClearUndo();
+                connectionBaseTextBox.ReadOnly = true;
+            }
+        }
+
+		private void expantionTextBox_KeyDown(object sender, KeyEventArgs e)
+		{
+			if (e.KeyCode == Keys.Enter)
+			{
+				AddUpdateAppSettings("expansionFile", expantionTextBox.Text);
+				expantionTextBox.ReadOnly = true;
+			}
+			else if (e.KeyCode == Keys.Escape)
+			{
+				expantionTextBox.Undo();
+				expantionTextBox.ClearUndo();
+				expantionTextBox.ReadOnly = true;
+			}
+		}
+
+		private void pathSAPtextBox_KeyDown(object sender, KeyEventArgs e)
+		{
+			if (e.KeyCode == Keys.Enter)
+			{
+				AddUpdateAppSettings("directorySAP", pathSAPtextBox.Text);
+				pathSAPtextBox.ReadOnly = true;
+				try
+				{
+					if (!Directory.Exists(variable_config.directorySAP))
+					{
+						DirectoryInfo d_sap = Directory.CreateDirectory(variable_config.directorySAP);
+					}
+				}
+				catch (Exception b)
+				{
+					MessageBox.Show(b.ToString());
+				}
+
+			}
+			else if (e.KeyCode == Keys.Escape)
+			{
+				pathSAPtextBox.Undo();
+				pathSAPtextBox.ClearUndo();
+				pathSAPtextBox.ReadOnly = true;
+			}
+		}
+	}
 }

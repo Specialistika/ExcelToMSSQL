@@ -85,7 +85,7 @@
             this.buttonSelectFiles.TabIndex = 4;
             this.buttonSelectFiles.Text = "Выбрать";
             this.buttonSelectFiles.UseVisualStyleBackColor = true;
-            this.buttonSelectFiles.Click += new System.EventHandler(this.buttonSelectFiles_Click);
+            this.buttonSelectFiles.Click += new System.EventHandler(this.buttonSelectFiles_ClickAsync);
             // 
             // selectFileslabel
             // 

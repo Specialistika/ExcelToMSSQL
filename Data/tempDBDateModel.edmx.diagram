@@ -5,10 +5,7 @@
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
       <Diagram DiagramId="cf5f082f82a9453d8e12efba545e4f61" Name="Diagram1">
-        <EntityTypeShape EntityType="xlsx_baseModel.bankBases" Width="1.5" PointX="0.75" PointY="0.75" />
-        <EntityTypeShape EntityType="xlsx_baseModel.gpb" Width="1.5" PointX="2.75" PointY="0.75" />
-        <EntityTypeShape EntityType="xlsx_baseModel.newSb" Width="1.5" PointX="4.75" PointY="0.75" />
-        <EntityTypeShape EntityType="xlsx_baseModel.vtb_bank" Width="1.5" PointX="0.75" PointY="4.75" />
+        <EntityTypeShape EntityType="xlsx_baseModel.tempDbase" Width="1.5" PointX="0.75" PointY="0.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

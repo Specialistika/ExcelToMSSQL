@@ -1,33 +1,33 @@
 ﻿using System;
-using System.Windows.Forms;
-using Load_bank_files.Class.config;
 using System.Data;
-using Load_bank_files.Class.DayDoc;
-using Load_bank_files.Class.GUI;
-using System.Threading;
 using System.Linq;
-using Load_bank_files.Data;
+using System.Threading;
+using System.Windows.Forms;
+using System.Threading.Tasks;
 using System.Data.SqlClient;
+using Load_bank_files.Data;
+using Load_bank_files.Class.GUI;
+using Load_bank_files.Class.config;
+using Load_bank_files.Class.DayDoc;
 using Load_bank_files.Class.Load_Data;
 using Load_bank_files.Class.loadMineTable;
-using System.Threading.Tasks;
-using System.Collections.Generic;
+
 
 namespace Load_bank_files.Forms
 {
-    public partial class oneDayFiles : Form
+	public partial class oneDayFiles : Form
     {
         OpenFileDialog openFileDialog = new OpenFileDialog();
         private delegate int threadCountDelegate();
-        public delegate void InvokeDelegate();
+		private delegate void InvokeDelegate();
         private BindingSource Bind = new BindingSource();
         private SqlDataAdapter dataAdapter = new SqlDataAdapter();
         private static oneDayFiles oneDayFile = null;
-        static string rowCountDel;
-        static string rowCountAdd;
-        static string rowCountDub;
+		private static string rowCountDel;
+		private static string rowCountAdd;
+		private static string rowCountDub;
 
-        public static oneDayFiles GetInstance()
+		public static oneDayFiles GetInstance()
         {
             if (oneDayFile == null)
                 oneDayFile = new oneDayFiles();
@@ -40,8 +40,8 @@ namespace Load_bank_files.Forms
             InitializeComponent();
             GUIController.setForm(this);
 
-            openFileDialog.InitialDirectory = variable_config.dir_initialisation;
-            openFileDialog.Filter = "xls files (*.xls)|*.xls|(*.xlsx)|*.xlsx";
+            openFileDialog.InitialDirectory = variable_config.dirUploadFiles;
+            openFileDialog.Filter = variable_config.GetexpansionFile;
             openFileDialog.FilterIndex = 2;
             openFileDialog.Multiselect = true;
             openFileDialog.RestoreDirectory = true;
@@ -49,30 +49,28 @@ namespace Load_bank_files.Forms
             countlistBox.FormattingEnabled = true;
             countlistBox.ScrollAlwaysVisible = true;
         }
-        private void buttonSelectFiles_Click(object sender, EventArgs e)
-        {
-            int selectCount = 0;
-            if (openFileDialog.ShowDialog() == DialogResult.OK)
-            {
-                selectCount = openFileDialog.FileNames.Length;
-                //GUIController.countFilesTextBox("Количество выбранных файлов: " + selectCount);
-                selectFilesTextBox.BeginInvoke(new InvokeDelegate(() => selectFilesTextBox.AppendText("Количество выбранных файлов: " + selectCount + Environment.NewLine)));
-                foreach (var file in openFileDialog.FileNames)
-                {
-                    try
-                    {
-                        oneDaydoc.oneDayfiles(file);
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show("Error: Could not read file from disk. Original error: " + ex.Message);
-                    }
-
-                }
-                DtGridOneDay_load();
-            }
-        }
-        private void countFileStatistic(string countRaw, string nameFiles)
+		private async void buttonSelectFiles_ClickAsync(object sender, EventArgs e)
+		{
+			if (openFileDialog.ShowDialog() == DialogResult.OK)
+			{
+				int selectCount = openFileDialog.FileNames.Length;
+				selectFilesTextBox.BeginInvoke(new InvokeDelegate(() =>
+				selectFilesTextBox.AppendText("Количество выбранных файлов: " + selectCount + Environment.NewLine)));
+				foreach (var file in openFileDialog.FileNames)
+				{
+					try
+					{
+						await Task.Factory.StartNew(() => oneDaydoc.OneDayfiles(file), TaskCreationOptions.LongRunning);
+					}
+					catch (Exception ex)
+					{
+						MessageBox.Show("Error: Could not read file from disk. Original error or dont't read row: " + ex.Message);
+					}
+				}
+			}
+			await Task.Factory.StartNew(() => DtGridOneDay_load());
+		}
+		private void countFileStatistic(string countRaw, string nameFiles)
         {
             object[] DataSetListbox =  { nameFiles+" - "+countRaw }; 
             try
@@ -136,7 +134,7 @@ namespace Load_bank_files.Forms
             {
                 using (var db = new xlsx_baseEntities())
                 {
-                    var cont = db.newSb
+                    var cont = db.tempDbase
                                 .Select(c => new
                                 {
                                     TimeT = c.TimeT,
@@ -144,18 +142,16 @@ namespace Load_bank_files.Forms
                                     Terminal = c.Terminal,
                                     Cardnum = c.Cardnum,
                                     AutCode = c.AutCode,
-                                    Sum = c.Sum,
-                                    Comis = c.Comis,
-                                    RRN = c.RRN
+                                    Sum = c.Sum
                                 }).ToList();
-                    DtGridOneDay.DataSource = cont;
-                }
-            }
+					DtGridOneDay.BeginInvoke(new InvokeDelegate(() => DtGridOneDay.DataSource = cont));
+				}
+			}
             catch (Exception e)
             {
                 MessageBox.Show("" + e.Message.ToString());
             }
-        }
+		}
 
         private void buttonClosed_Click(object sender, EventArgs e)
         {
@@ -171,32 +167,85 @@ namespace Load_bank_files.Forms
             DtGridOneDay_load();
         }
 
-        private void buttonRunProces_Click(object sender, EventArgs e)
+        public void propertiesProgressbar()
         {
-           string countRow = Load_Data_DataDev.Load_data_dev(1);
-            selectFilesTextBox.BeginInvoke(new InvokeDelegate(() => selectFilesTextBox.AppendText("Количество импортированных строк " + countRow + Environment.NewLine)));
+			timerOneDaysFiles.Interval = (1000);
+            progressBarOneDaysFiles.Maximum = 600;
+            progressBarOneDaysFiles.Value = 0;
+            timerOneDaysFiles.Tick += new EventHandler(timerOneDaysFiles_Tick);
+            timerOneDaysFiles.Start();
+        }
+
+        private async void buttonRunProces_Click(object sender, EventArgs e)
+        {
+            propertiesProgressbar();
+			switch (MineGenegalForms.TypeFile_)
+			{
+				case 1:
+				case 2:
+				case 3:
+					{
+						rowCountDel = (await Task.Run(() => Load_Data_DataDev.Load_data_dev(1))).Item1;
+						break;
+					}
+
+				case 4:
+					{
+						rowCountDel = (await Task.Run(() => Load_Data_DataDev.Load_data_dev(4))).Item1;
+						break;
+					}
+
+				case 5:
+					{
+						rowCountDel = (await Task.Run(() => Load_Data_DataDev.Load_data_dev(5))).Item1;
+						break;
+					}
+			}
+
+			timerOneDaysFiles.Stop();
+            progressBarOneDaysFiles.BeginInvoke(new threadCountDelegate(() => progressBarOneDaysFiles.Value = 600));
+            selectFilesTextBox.BeginInvoke(new InvokeDelegate(() => 
+                                selectFilesTextBox.AppendText(
+                                "Количество импортированных строк " 
+                                + rowCountDel + Environment.NewLine)));
         }
 
         private async void uploadMineButton_Click(object sender, EventArgs e)
         {
-            int bank = 1;
-            this.timerOneDaysFiles.Interval = (1000);
-            progressBarOneDaysFiles.Maximum = 600;
-            progressBarOneDaysFiles.Value = 0;
-            timerOneDaysFiles.Tick += new EventHandler(this.timerOneDaysFiles_Tick);
-            timerOneDaysFiles.Start();
-            var uploadMine = await Task.Run(() => loadMineTable.proc_import_vtb_gpb(bank));
+            propertiesProgressbar();
+			Tuple<string, string, string> uploadMine = null;
 
-            rowCountDel = uploadMine.Item1;
-            rowCountAdd = uploadMine.Item2;
-            rowCountDub = uploadMine.Item3;
-                        //, TaskCreationOptions.LongRunning);
+			switch (MineGenegalForms.TypeFile_)
+			{
+				case 1:
+				case 2:
+				case 3:
+					{
+						 uploadMine = await Task.Run(() => loadMineTable.UploadGPBmine(1));
+						break;
+					}
+				case 4:
+					{
+						 uploadMine = await Task.Run(() => loadMineTable.UploadGPBmine(4));
+						break;
+					}
+				case 5:
+					{
+						 uploadMine = await Task.Run(() => loadMineTable.UploadGPBmine(5));
+						break;
+					}
+			}
+			rowCountDel = uploadMine.Item1;
+			rowCountAdd = uploadMine.Item2;
+			rowCountDub = uploadMine.Item3;
 
-            timerOneDaysFiles.Stop();
+			//, TaskCreationOptions.LongRunning);
+
+			timerOneDaysFiles.Stop();
             progressBarOneDaysFiles.BeginInvoke(new threadCountDelegate(() => progressBarOneDaysFiles.Value = 600));
             
-            selectFilesTextBox.BeginInvoke(new InvokeDelegate(() 
-                    => selectFilesTextBox.AppendText(
+            selectFilesTextBox.BeginInvoke(new InvokeDelegate(() => 
+                        selectFilesTextBox.AppendText(
                         "Удаленных строк " + rowCountDel 
                         + Environment.NewLine + "Добавленных строк в таблицу " + rowCountAdd 
                         + Environment.NewLine + "Дублей удалено " + rowCountDub)));

@@ -5,141 +5,49 @@
     <!-- SSDL content -->
     <edmx:StorageModels>
     <Schema Namespace="xlsx_baseModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
-        <EntityType Name="bankBases">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="DateT" Type="datetime" Nullable="false" />
-          <Property Name="TimeT" Type="datetime" Nullable="false" />
-          <Property Name="Terminal" Type="nvarchar(max)" />
-          <Property Name="Cardnum" Type="nvarchar(max)" />
-          <Property Name="AutCode" Type="nvarchar(max)" />
-          <Property Name="Sum" Type="nvarchar(max)" />
-          <Property Name="Comis" Type="nvarchar(max)" />
-          <Property Name="RRN" Type="nvarchar(max)" />
-          <Property Name="DateP" Type="datetime" Nullable="false" />
-        </EntityType>
-        <EntityType Name="gpb">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="one" Type="varchar" MaxLength="50" />
-          <Property Name="two" Type="varchar" MaxLength="50" />
-          <Property Name="three" Type="varchar" MaxLength="50" />
-          <Property Name="four" Type="varchar" MaxLength="50" />
-          <Property Name="five" Type="varchar" MaxLength="50" />
-          <Property Name="six" Type="varchar" MaxLength="50" />
-          <Property Name="seven" Type="varchar" MaxLength="50" />
-          <Property Name="eight" Type="varchar" MaxLength="50" />
-          <Property Name="nine" Type="varchar" MaxLength="50" />
-          <Property Name="ten" Type="varchar" MaxLength="50" />
-        </EntityType>
-        <EntityType Name="newSb">
+        <EntityType Name="tempDbase">
           <Key>
             <PropertyRef Name="ID" />
           </Key>
           <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="TimeT" Type="datetime" />
-          <Property Name="DateT" Type="date" />
+          <Property Name="DateT" Type="datetime" />
           <Property Name="Terminal" Type="varchar" MaxLength="50" />
           <Property Name="Cardnum" Type="varchar" MaxLength="50" />
           <Property Name="AutCode" Type="varchar" MaxLength="50" />
           <Property Name="Sum" Type="varchar" MaxLength="50" />
           <Property Name="Comis" Type="varchar" MaxLength="50" />
           <Property Name="RRN" Type="varchar" MaxLength="50" />
-        </EntityType>
-        <EntityType Name="vtb_bank">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="one" Type="varchar" MaxLength="50" />
-          <Property Name="two" Type="varchar" MaxLength="50" />
-          <Property Name="three" Type="varchar" MaxLength="50" />
-          <Property Name="four" Type="varchar" MaxLength="50" />
-          <Property Name="five" Type="varchar" MaxLength="50" />
-          <Property Name="six" Type="varchar" MaxLength="50" />
-          <Property Name="seven" Type="varchar" MaxLength="50" />
-          <Property Name="eight" Type="varchar" MaxLength="50" />
-          <Property Name="nine" Type="varchar" MaxLength="50" />
+          <Property Name="Typ" Type="varchar" MaxLength="50" />
+          <Property Name="PS" Type="varchar" MaxLength="50" />
+          <Property Name="Emitent" Type="varchar" MaxLength="50" />
         </EntityType>
         <EntityContainer Name="xlsx_baseModelStoreContainer">
-          <EntitySet Name="bankBases" EntityType="Self.bankBases" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="gpb" EntityType="Self.gpb" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="newSb" EntityType="Self.newSb" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="vtb_bank" EntityType="Self.vtb_bank" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tempDbase" EntityType="Self.tempDbase" Schema="dbo" store:Type="Tables" />
         </EntityContainer>
       </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="xlsx_baseModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
         <EntityContainer Name="xlsx_baseEntities" annotation:LazyLoadingEnabled="true">
-          <EntitySet Name="bankBases" EntityType="xlsx_baseModel.bankBases" />
-          <EntitySet Name="gpb" EntityType="xlsx_baseModel.gpb" />
-          <EntitySet Name="newSb" EntityType="xlsx_baseModel.newSb" />
-          <EntitySet Name="vtb_bank" EntityType="xlsx_baseModel.vtb_bank" />
+          <EntitySet Name="tempDbase" EntityType="xlsx_baseModel.tempDbase" />
         </EntityContainer>
-        <EntityType Name="bankBases">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="DateT" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="TimeT" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="Terminal" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="Cardnum" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="AutCode" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="Sum" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="Comis" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="RRN" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="DateP" Type="DateTime" Nullable="false" Precision="3" />
-        </EntityType>
-        <EntityType Name="gpb">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="one" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="two" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="three" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="four" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="five" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="six" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="seven" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="eight" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="nine" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="ten" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-        </EntityType>
-        <EntityType Name="newSb">
+        <EntityType Name="tempDbase">
           <Key>
             <PropertyRef Name="ID" />
           </Key>
           <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="TimeT" Type="DateTime" Precision="3" />
-          <Property Name="DateT" Type="DateTime" Precision="0" />
+          <Property Name="DateT" Type="DateTime" Precision="3" />
           <Property Name="Terminal" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="Cardnum" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="AutCode" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="Sum" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="Comis" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="RRN" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-        </EntityType>
-        <EntityType Name="vtb_bank">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="one" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="two" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="three" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="four" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="five" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="six" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="seven" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="eight" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="nine" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Typ" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="PS" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Emitent" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -147,42 +55,12 @@
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
         <EntityContainerMapping StorageEntityContainer="xlsx_baseModelStoreContainer" CdmEntityContainer="xlsx_baseEntities">
-          <EntitySetMapping Name="bankBases">
-            <EntityTypeMapping TypeName="xlsx_baseModel.bankBases">
-              <MappingFragment StoreEntitySet="bankBases">
-                <ScalarProperty Name="DateP" ColumnName="DateP" />
-                <ScalarProperty Name="RRN" ColumnName="RRN" />
-                <ScalarProperty Name="Comis" ColumnName="Comis" />
-                <ScalarProperty Name="Sum" ColumnName="Sum" />
-                <ScalarProperty Name="AutCode" ColumnName="AutCode" />
-                <ScalarProperty Name="Cardnum" ColumnName="Cardnum" />
-                <ScalarProperty Name="Terminal" ColumnName="Terminal" />
-                <ScalarProperty Name="TimeT" ColumnName="TimeT" />
-                <ScalarProperty Name="DateT" ColumnName="DateT" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="gpb">
-            <EntityTypeMapping TypeName="xlsx_baseModel.gpb">
-              <MappingFragment StoreEntitySet="gpb">
-                <ScalarProperty Name="ten" ColumnName="ten" />
-                <ScalarProperty Name="nine" ColumnName="nine" />
-                <ScalarProperty Name="eight" ColumnName="eight" />
-                <ScalarProperty Name="seven" ColumnName="seven" />
-                <ScalarProperty Name="six" ColumnName="six" />
-                <ScalarProperty Name="five" ColumnName="five" />
-                <ScalarProperty Name="four" ColumnName="four" />
-                <ScalarProperty Name="three" ColumnName="three" />
-                <ScalarProperty Name="two" ColumnName="two" />
-                <ScalarProperty Name="one" ColumnName="one" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="newSb">
-            <EntityTypeMapping TypeName="xlsx_baseModel.newSb">
-              <MappingFragment StoreEntitySet="newSb">
+          <EntitySetMapping Name="tempDbase">
+            <EntityTypeMapping TypeName="xlsx_baseModel.tempDbase">
+              <MappingFragment StoreEntitySet="tempDbase">
+                <ScalarProperty Name="Emitent" ColumnName="Emitent" />
+                <ScalarProperty Name="PS" ColumnName="PS" />
+                <ScalarProperty Name="Typ" ColumnName="Typ" />
                 <ScalarProperty Name="RRN" ColumnName="RRN" />
                 <ScalarProperty Name="Comis" ColumnName="Comis" />
                 <ScalarProperty Name="Sum" ColumnName="Sum" />
@@ -191,22 +69,6 @@
                 <ScalarProperty Name="Terminal" ColumnName="Terminal" />
                 <ScalarProperty Name="DateT" ColumnName="DateT" />
                 <ScalarProperty Name="TimeT" ColumnName="TimeT" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="vtb_bank">
-            <EntityTypeMapping TypeName="xlsx_baseModel.vtb_bank">
-              <MappingFragment StoreEntitySet="vtb_bank">
-                <ScalarProperty Name="nine" ColumnName="nine" />
-                <ScalarProperty Name="eight" ColumnName="eight" />
-                <ScalarProperty Name="seven" ColumnName="seven" />
-                <ScalarProperty Name="six" ColumnName="six" />
-                <ScalarProperty Name="five" ColumnName="five" />
-                <ScalarProperty Name="four" ColumnName="four" />
-                <ScalarProperty Name="three" ColumnName="three" />
-                <ScalarProperty Name="two" ColumnName="two" />
-                <ScalarProperty Name="one" ColumnName="one" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>

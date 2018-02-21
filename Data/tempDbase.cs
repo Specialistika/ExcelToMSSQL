@@ -12,18 +12,19 @@ namespace Load_bank_files.Data
     using System;
     using System.Collections.Generic;
     
-    public partial class gpb
+    public partial class tempDbase
     {
         public int ID { get; set; }
-        public string one { get; set; }
-        public string two { get; set; }
-        public string three { get; set; }
-        public string four { get; set; }
-        public string five { get; set; }
-        public string six { get; set; }
-        public string seven { get; set; }
-        public string eight { get; set; }
-        public string nine { get; set; }
-        public string ten { get; set; }
+        public Nullable<System.DateTime> TimeT { get; set; }
+        public Nullable<System.DateTime> DateT { get; set; }
+        public string Terminal { get; set; }
+        public string Cardnum { get; set; }
+        public string AutCode { get; set; }
+        public string Sum { get; set; }
+        public string Comis { get; set; }
+        public string RRN { get; set; }
+        public string Typ { get; set; }
+        public string PS { get; set; }
+        public string Emitent { get; set; }
     }
 }

@@ -1,76 +1,57 @@
 ﻿using System;
 using System.Windows.Forms;
-using conn_str = Load_bank_files.Class.config.variable_config;
 using System.Data.OleDb;
 using System.Data.SqlClient;
+using Load_bank_files.Forms;
+using Load_bank_files.Class.config;
+using System.Threading.Tasks;
 
 namespace Load_bank_files.Class.DataOneDoc
 {
-    public static class dateOneDocSB
+	public static class dateOneDocSB
     {
         public static void SaveToTempbase(string filePath)
         {
-            String excelConnString = String.Format("Provider=Microsoft.ACE.OLEDB.12.0;Data Source={0};Extended Properties=\"Excel 12.0\"", filePath);
+            string cmdQuery = "";
+            String excelConnString = $"Provider=Microsoft.ACE.OLEDB.12.0;Data Source={filePath};Extended Properties=\"Excel 12.0\"";
             using (OleDbConnection excelConn = new OleDbConnection(excelConnString))
             {
-                string cmdQuery = string.Format("Select TimeT+DateT as DataTimeT, TimeT, Terminal, Cardnum, AutCode, Sum, Comis, RRN from [List{0}$]", 1);
-                using (OleDbCommand cmd = new OleDbCommand(cmdQuery, excelConn))
+				switch (MineGenegalForms.TypeFile_)
+				{
+					case 1:
+						cmdQuery = $"Select TimeT+DateT as TimeS, TimeT as Datet, Terminal, Cardnum, AutCode, Sum, Comis, RRN from [List{1}$]";
+						break;
+					case 2:
+						cmdQuery = $"Select Terminal, LEFT(TimeT, 10) +' '+REPLACE(RIGHT(TimeT, 8),'.',':') as TimeS, LEFT(TimeT, 10) as Datet, Sum,  Comis, RRN, Cardnum, AutCode from [List{1}$]";
+						break;
+					case 3:
+						cmdQuery = $"Select LEFT(TimeT, 10) +' '+REPLACE(RIGHT(TimeT, 8),'.',':') as TimeS, LEFT(TimeT, 10) as Datet, Terminal, Cardnum, AutCode, Sum, Comis, RRN from [List{1}$]";
+						break;
+					case 4:
+					case 5:
+						cmdQuery = $"Select LEFT(TimeT, 10) +' '+REPLACE(RIGHT(TimeT, 9),'.',':') as TimeS, LEFT(TimeT, 10) as Datet, Terminal, Cardnum, AutCode, Sum, Comis, Status as RRN, Typ, PS, Emitent from [List{1}$]";
+						break;
+				}
+				using (OleDbCommand cmd = new OleDbCommand(cmdQuery, excelConn))
                 {
                     excelConn.Open();
                     using (OleDbDataReader OleReader = cmd.ExecuteReader())
                     {
-                        using (SqlBulkCopy copyBulk = new SqlBulkCopy(conn_str.ConnectionLocal))
+                        using (SqlBulkCopy copyBulk = new SqlBulkCopy(variable_config.ConnectionLocal))
                         {
-                            copyBulk.DestinationTableName = "newSB";
+                            copyBulk.DestinationTableName = "tempDbase";
                             try
                             {
-                                SqlBulkCopyColumnMapping mapID =
-        new SqlBulkCopyColumnMapping("DataTimeT", "TimeT");
-                            copyBulk.ColumnMappings.Add(mapID);
+								MappingSchema.mapTemplocal(copyBulk);
 
-                            SqlBulkCopyColumnMapping mapName =
-        new SqlBulkCopyColumnMapping("TimeT", "DateT");
-                            copyBulk.ColumnMappings.Add(mapName);
+								copyBulk.WriteToServer(OleReader);
 
-                            SqlBulkCopyColumnMapping mapMumber =
-        new SqlBulkCopyColumnMapping("Terminal", "Terminal");
-                            copyBulk.ColumnMappings.Add(mapMumber);
-
-                            SqlBulkCopyColumnMapping mapA =
-        new SqlBulkCopyColumnMapping("Cardnum", "Cardnum");
-                            copyBulk.ColumnMappings.Add(mapA);
-
-                            SqlBulkCopyColumnMapping mapB =
-        new SqlBulkCopyColumnMapping("AutCode", "AutCode");
-                            copyBulk.ColumnMappings.Add(mapB);
-
-                            SqlBulkCopyColumnMapping mapC =
-        new SqlBulkCopyColumnMapping("Sum", "Sum");
-                            copyBulk.ColumnMappings.Add(mapC);
-
-                            SqlBulkCopyColumnMapping mapD =
-       new SqlBulkCopyColumnMapping("Comis", "Comis");
-                            copyBulk.ColumnMappings.Add(mapD);
-
-                            SqlBulkCopyColumnMapping mapE =
-        new SqlBulkCopyColumnMapping("RRN", "RRN");
-                            copyBulk.ColumnMappings.Add(mapE);
-
-
-                                copyBulk.WriteToServer(OleReader);
-                                while (OleReader.Read())
-                                {
-                                    copyBulk.WriteToServer(OleReader);
-                                }
-                            }
+								OleReader.Close();
+								excelConn.Close();
+							}
                             catch (Exception s)
                             {
                                 MessageBox.Show(s.Message);
-                            }
-                            finally
-                            {
-                                OleReader.Close();
-                                excelConn.Close();
                             }
                         }
                     }

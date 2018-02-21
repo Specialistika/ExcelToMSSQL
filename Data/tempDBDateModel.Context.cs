@@ -25,9 +25,6 @@ namespace Load_bank_files.Data
             throw new UnintentionalCodeFirstException();
         }
     
-        public virtual DbSet<bankBases> bankBases { get; set; }
-        public virtual DbSet<gpb> gpb { get; set; }
-        public virtual DbSet<newSb> newSb { get; set; }
-        public virtual DbSet<vtb_bank> vtb_bank { get; set; }
+        public virtual DbSet<tempDbase> tempDbase { get; set; }
     }
 }

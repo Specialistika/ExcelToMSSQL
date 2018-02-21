@@ -10,20 +10,21 @@ namespace Load_bank_files.Class.sb_load
 {
     public class sb_load_files 
     {
-
+        OpenFileDialog ofd = new OpenFileDialog();
+        public sb_load_files()
+        {
+            ofd.Filter = "xls files (*.xls)|*.xls|(*.xlsx)|*.xlsx";
+            ofd.FilterIndex = 2;
+            ofd.Multiselect = true;
+            ofd.RestoreDirectory = true;
+        }
 
         public void sb_load_form(out string[] fl_names, out int n_count, int sb_mark, string fildirectoryout)
         {
             fl_names = new string[]{};
             n_count = 0;
             Stream myStream = null;
-                int l = 0;
-                l = (sb_mark == 1 || sb_mark == 4 || sb_mark == 5) ? 4 : 5;
-            OpenFileDialog ofd = new OpenFileDialog();
-            ofd.Filter = "xls files (*.xls)|*.xls|(*.xlsx)|*.xlsx";
-            ofd.FilterIndex = 2;
-            ofd.Multiselect = true;
-            ofd.RestoreDirectory = true;
+            int l = (sb_mark == 1 || sb_mark == 4 || sb_mark == 5) ? 4 : 5;
 
             if (ofd.ShowDialog() == DialogResult.OK)
             {

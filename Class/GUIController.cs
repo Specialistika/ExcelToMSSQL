@@ -29,7 +29,10 @@ namespace Load_bank_files.Class.GUI
                 B.BeginInvoke(new MethodInvoker(() => B.Update()));
             else 
             B.BeginInvoke(new MethodInvoker(() => B.Text = TextList));
-        }
+			if (TextList == "")
+				B.BeginInvoke(new MethodInvoker(() => B.Clear()));
+
+		}
         public static void countFileslistbox()
         {
             ListBox B = (ListBox)_instance.Controls["countlistBox"];

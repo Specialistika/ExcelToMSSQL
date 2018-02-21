@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Windows.Forms;
-using Load_bank_files.Forms;
 using Load_bank_files.Class.sb_load;
 using Load_bank_files.Class.loadMineTable;
 using Load_bank_files.Class.config;
@@ -8,9 +7,7 @@ using Load_bank_files.Class.ToDatabase;
 using lcg = Load_bank_files.Class.GetData;
 using Load_bank_files.Class.Load_Data;
 using System.Threading.Tasks;
-using System.Diagnostics;
-using System.Collections.Generic;
-using System.Threading;
+using Load_bank_files.Class;
 
 namespace Load_bank_files.Forms
 {
@@ -39,7 +36,6 @@ namespace Load_bank_files.Forms
             BankTableDtGrid.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.AllCellsExceptHeader);
         }
 
-
         /* ----------Инициализация и свойства грида----------------------------*/
         private void dataGrid_reload(int bank_id)
         {
@@ -50,7 +46,6 @@ namespace Load_bank_files.Forms
             gtv.GetData(sqlcount);
             dataBinding.DataSource = lcg.GetDataView.table_bank;
             BankTableDtGrid.DataSource = dataBinding;
-
         }
 
         /* Загрузка из таблиц Excel их очистка и отправка данных во временную таблицу ГПБ банка*/
@@ -98,28 +93,7 @@ namespace Load_bank_files.Forms
             dataGrid_reload(4);
         }
 
-        /* Загрузка таблиц Excel их отправка на сервер*/
-        public void excelLoadTempSb()
-        {
-            sb_load_files sb_files = new sb_load_files();
-            sb_files.sb_load_form(out fl_names, out n_count, 1, variable_config.sb_file_dir);
-            try
-            {
-                if (fl_names != null && n_count != 0)
-                {
-                    FileLoad.Items.AddRange(fl_names);
-                    sb_txt.AppendText("Количество файлов: " + n_count);
-                }
-            }
-            catch (Exception b)
-            {
-                MessageBox.Show(b.Message);
-            }
-        }
-
-
         /*-----------------------Свойства грида------------------------*/
-
         public class RowComparer : System.Collections.IComparer
         {
             private static int sortOrderModifier = 1;
@@ -167,11 +141,13 @@ namespace Load_bank_files.Forms
             procesTimer.Start();
 
             string uploadTemp = await Task.Factory.StartNew<string>(() =>
-                loadMineTable.sb_load_temp_table(progress), TaskCreationOptions.LongRunning);
+                loadMineTable.UploadSBtemp(progress), TaskCreationOptions.LongRunning);
 
             procesTimer.Stop();
             threadProgressBar.BeginInvoke(new threadCountDelegate(() => threadProgressBar.Value = 10));
             sb_txt.AppendText("Добавлено во временную таблицу строк " + uploadTemp + Environment.NewLine);
+            #region 
+            /*
             //label1.Text = uploadTemp;
             
             //threadProgressBar.BeginInvoke(new threadCountDelegate(() => threadProgressBar.Maximum = 10));
@@ -201,7 +177,6 @@ namespace Load_bank_files.Forms
             ////var tasks = new Task[] { delay, uploadTemp };
             ////Task.WaitAll(tasks.);
 
-
             //await Task.WhenAll(delay, uploadTemp);
             ////var progress = new Progress<int>(s => threadProgressBar.Value = s);
             ////threadProgressBar.Value = Convert.ToInt32(progress)
@@ -214,6 +189,8 @@ namespace Load_bank_files.Forms
             //if (rowCounterr != null)
             //sb_txt.AppendText(rowCounterr + Environment.NewLine);
             //this.label1.Text = rowCounterr;
+            */
+            #endregion
         }
 
         private async void loadMineTablebutton_Click(object sender, EventArgs e)
@@ -226,7 +203,7 @@ namespace Load_bank_files.Forms
             procesTimer.Start();
 
             string uploadMine = await Task.Factory.StartNew<string>(() =>
-                                    loadMineTable.sb_load_mine_table(progress), TaskCreationOptions.LongRunning);
+                                    loadMineTable.UploadSBmine(progress), TaskCreationOptions.LongRunning);
 
             procesTimer.Stop();
             threadProgressBar.BeginInvoke(new threadCountDelegate(() => threadProgressBar.Value = 10));
@@ -235,34 +212,34 @@ namespace Load_bank_files.Forms
         /* -------------------Загрузка данных ВТБ и ГПБ банков в основную таблицу------------*/
         private void btn_vtb_kld_Click(object sender, EventArgs e)
         {
-            loadBlock_bank(3);
+            LoadBlock_bank(3);
         }
 
         private void btn_gpb_msk_Click_1(object sender, EventArgs e)
         {
-            loadBlock_bank(4);
+            LoadBlock_bank(4);
         }
 
         private void btn_gpb_kld_Click_1(object sender, EventArgs e)
         {
-            loadBlock_bank(5);
+            LoadBlock_bank(5);
         }
-        private async void loadBlock_bank(int bank)
-        {
-            Load_Data_DataDev.delBaks(bank);
-            Text_vtb.AppendText("Количество переданных строк: " + Load_Data_DataDev.Load_data_dev(bank) + Environment.NewLine);
-            Load_Data_DataDev.delTemp(bank);
-            var result = await loadMineTable.proc_import_vtb_gpb(bank);
-            rowCountDel = result.Item1;
-            rowCountAdd = result.Item2;
-            rowCountDub = result.Item3; 
-            Text_vtb.AppendText("Удаленных строк в основной базе" + rowCountDel + Environment.NewLine);
-            Text_vtb.AppendText("Добавленых в базу" + rowCountAdd + Environment.NewLine);
-            Text_vtb.AppendText("Удалено дублей" + rowCountDub + Environment.NewLine);
-            dataGrid_reload(bank);
-        }
+		private void LoadBlock_bank(int bank)
+		{
+			deleteDBbase.delBakns(bank);
+			Text_vtb.AppendText("Количество переданных строк: " + Load_Data_DataDev.Load_data_dev(bank) + Environment.NewLine);
+			Load_Data_DataDev.delTemp(bank);
+			var result = loadMineTable.UploadGPBmine(bank);
+			rowCountDel = result.Item1;
+			rowCountAdd = result.Item2;
+			rowCountDub = result.Item3;
+			Text_vtb.AppendText("Удаленных строк в основной базе" + rowCountDel + Environment.NewLine);
+			Text_vtb.AppendText("Добавленых в базу" + rowCountAdd + Environment.NewLine);
+			Text_vtb.AppendText("Удалено дублей" + rowCountDub + Environment.NewLine);
+			dataGrid_reload(bank);
+		}
 
-        private void processTimer_Tick(object sender, EventArgs e)
+		private void processTimer_Tick(object sender, EventArgs e)
         {
             if (threadProgressBar.Value != 10)
             {
@@ -274,5 +251,22 @@ namespace Load_bank_files.Forms
             }
         }
 
+        private void TempUploadButton_Click(object sender, EventArgs e)
+        {
+            sb_load_files sb_files = new sb_load_files();
+            sb_files.sb_load_form(out fl_names, out n_count, 1, variable_config.sb_file_dir);
+            try
+            {
+                if (fl_names != null && n_count != 0)
+                {
+                    FileLoad.Items.AddRange(fl_names);
+                    sb_txt.AppendText("Количество файлов: " + n_count);
+                }
+            }
+            catch (Exception b)
+            {
+                MessageBox.Show(b.Message);
+            }
+        }
     }
 }
