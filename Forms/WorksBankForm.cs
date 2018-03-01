@@ -7,11 +7,11 @@ using Load_bank_files.Class.ToDatabase;
 using lcg = Load_bank_files.Class.GetData;
 using Load_bank_files.Class.Load_Data;
 using System.Threading.Tasks;
-using Load_bank_files.Class;
+using Load_bank_files.Class.deleteDBbase;
 
 namespace Load_bank_files.Forms
 {
-    public partial class WorksBankForm : Form
+	public partial class WorksBankForm : Form
     {
         private static WorksBankForm oneDayFile = null;
         public delegate int threadCountDelegate();
@@ -141,7 +141,7 @@ namespace Load_bank_files.Forms
             procesTimer.Start();
 
             string uploadTemp = await Task.Factory.StartNew<string>(() =>
-                loadMineTable.UploadSBtemp(progress), TaskCreationOptions.LongRunning);
+				AddToMineTable.UploadSBtemp(progress), TaskCreationOptions.LongRunning);
 
             procesTimer.Stop();
             threadProgressBar.BeginInvoke(new threadCountDelegate(() => threadProgressBar.Value = 10));
@@ -203,7 +203,7 @@ namespace Load_bank_files.Forms
             procesTimer.Start();
 
             string uploadMine = await Task.Factory.StartNew<string>(() =>
-                                    loadMineTable.UploadSBmine(progress), TaskCreationOptions.LongRunning);
+									AddToMineTable.UploadSBmine(progress), TaskCreationOptions.LongRunning);
 
             procesTimer.Stop();
             threadProgressBar.BeginInvoke(new threadCountDelegate(() => threadProgressBar.Value = 10));
@@ -212,24 +212,24 @@ namespace Load_bank_files.Forms
         /* -------------------Загрузка данных ВТБ и ГПБ банков в основную таблицу------------*/
         private void btn_vtb_kld_Click(object sender, EventArgs e)
         {
-            LoadBlock_bank(3);
+            LoadBlock_bankAsync(3);
         }
 
         private void btn_gpb_msk_Click_1(object sender, EventArgs e)
         {
-            LoadBlock_bank(4);
+            LoadBlock_bankAsync(4);
         }
 
         private void btn_gpb_kld_Click_1(object sender, EventArgs e)
         {
-            LoadBlock_bank(5);
+            LoadBlock_bankAsync(5);
         }
-		private void LoadBlock_bank(int bank)
+		private async void LoadBlock_bankAsync(int bank)
 		{
-			deleteDBbase.delBakns(bank);
+			await DeleteDBbase.DelBakns(bank);
 			Text_vtb.AppendText("Количество переданных строк: " + Load_Data_DataDev.Load_data_dev(bank) + Environment.NewLine);
 			Load_Data_DataDev.delTemp(bank);
-			var result = loadMineTable.UploadGPBmine(bank);
+			var result = AddToMineTable.UploadGPBmine(bank);
 			rowCountDel = result.Item1;
 			rowCountAdd = result.Item2;
 			rowCountDub = result.Item3;

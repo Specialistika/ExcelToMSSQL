@@ -51,6 +51,9 @@
     <ApplicationIcon>folders_downloads_12708.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="CiricularIndeterminateProgress">
+      <HintPath>..\..\CircularProcess\CircularProcess\obj\Debug\CiricularIndeterminateProgress.dll</HintPath>
+    </Reference>
     <Reference Include="DocumentFormat.OpenXml, Version=2.8.1.0, Culture=neutral, PublicKeyToken=8fb06cb64d019a17, processorArchitecture=MSIL">
       <HintPath>packages\DocumentFormat.OpenXml.2.8.1\lib\net40\DocumentFormat.OpenXml.dll</HintPath>
     </Reference>
@@ -96,10 +99,11 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Class\AddToMineTable.cs" />
     <Compile Include="Class\ConfigurationSettings.cs" />
     <Compile Include="Class\DataHelper.cs" />
     <Compile Include="Class\dateOneDocSB.cs" />
-    <Compile Include="Class\deleteDBbase.cs" />
+    <Compile Include="Class\DeleteDBbase.cs" />
     <Compile Include="Class\Error.cs" />
     <Compile Include="Class\ExcelUtil.cs" />
     <Compile Include="Class\GetDataView.cs" />
@@ -109,7 +113,7 @@
     <Compile Include="Class\oneDayDoc.cs" />
     <Compile Include="Class\SafeConverter.cs" />
     <Compile Include="Class\SaveFileToDatabase.cs" />
-    <Compile Include="Class\sb_load_temp.cs" />
+    <Compile Include="Class\UploadSap.cs" />
     <Compile Include="Class\variable_config.cs" />
     <Compile Include="Class\selectBankFiles.cs" />
     <Compile Include="D:\VSlabs\Projects\Load_banks\Mine_forms.cs">
@@ -147,12 +151,6 @@
     <Compile Include="Forms\MineGenegalForms.Designer.cs">
       <DependentUpon>MineGenegalForms.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\oneDayFiles.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\oneDayFiles.Designer.cs">
-      <DependentUpon>oneDayFiles.cs</DependentUpon>
-    </Compile>
     <Compile Include="Forms\Service_Form.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -165,6 +163,15 @@
     </Compile>
     <Compile Include="Forms\TrimExcelForm.Designer.cs">
       <DependentUpon>TrimExcelForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\UploadDayFiles.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\UploadSAP.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\UploadSAP.Designer.cs">
+      <DependentUpon>UploadSAP.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\WorksBankForm.cs">
       <SubType>Form</SubType>
@@ -180,14 +187,17 @@
     <EmbeddedResource Include="Forms\MineGenegalForms.resx">
       <DependentUpon>MineGenegalForms.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\oneDayFiles.resx">
-      <DependentUpon>oneDayFiles.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Forms\Service_Form.resx">
       <DependentUpon>Service_Form.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\TrimExcelForm.resx">
       <DependentUpon>TrimExcelForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\UploadDayFiles.resx">
+      <DependentUpon>UploadDayFiles.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\UploadSAP.resx">
+      <DependentUpon>UploadSAP.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\WorksBankForm.resx">
       <DependentUpon>WorksBankForm.cs</DependentUpon>
@@ -255,17 +265,16 @@
       <DependentUpon>tempDBDateModel.edmx</DependentUpon>
       <LastGenOutput>tempDBDateModel.cs</LastGenOutput>
     </Content>
-    <Content Include="Data\xlsx_base.mdf">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Data\xlsx_base_log.ldf">
-      <DependentUpon>xlsx_base.mdf</DependentUpon>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="folders_downloads_12708.ico" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Task\Factory\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

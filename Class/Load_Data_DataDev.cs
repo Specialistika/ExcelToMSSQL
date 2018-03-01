@@ -1,6 +1,7 @@
 ﻿using Load_bank_files.Class.config;
 using System;
 using System.Data.SqlClient;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Load_bank_files.Class.Load_Data
@@ -9,9 +10,9 @@ namespace Load_bank_files.Class.Load_Data
 	{
 		private static string YearMonth = variable_config.year + variable_config.month;
 
-		public static Tuple<string> Load_data_dev(int bank)
+		public static async Task<Tuple<string>> Load_data_dev(int bank)
 		{
-			int countStart = 0;
+			string countStart = null;
 			string bank_id = "";
 			string commsql = "";
 
@@ -58,7 +59,7 @@ namespace Load_bank_files.Class.Load_Data
 				sqlconn.Open();
 				SqlCommand commSurceread = new SqlCommand(commsql, sqlconn);
 				SqlDataReader reader = commSurceread.ExecuteReader();
-
+				
 				using (var sqlconnDest = new SqlConnection(variable_config.ConnStrgingBase))
 				{
 					using (var BulkCopy = new SqlBulkCopy(sqlconnDest))
@@ -86,7 +87,7 @@ namespace Load_bank_files.Class.Load_Data
 							BulkCopy.BulkCopyTimeout = variable_config.timerProgressbar;
 							BulkCopy.WriteToServer(reader);
 							reader.Close();
-							countStart = Convert.ToInt32(new SqlCommand(queryCount, sqlconnDest).ExecuteScalar());
+							countStart = await Task.Factory.StartNew(() => new SqlCommand(queryCount, sqlconnDest) { CommandTimeout = variable_config.timerProgressbar }.ExecuteScalar().ToString());
 							sqlconnDest.Close();
 							sqlconn.Close();
 						}
@@ -97,7 +98,7 @@ namespace Load_bank_files.Class.Load_Data
 					}
 				}
 			}
-			return new Tuple<string>(countStart.ToString());
+			return new Tuple<string>(countStart);
 		}
 
 		public static void delTemp(int bank)

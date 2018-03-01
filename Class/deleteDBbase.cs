@@ -1,13 +1,15 @@
 ﻿using Load_bank_files.Class.config;
 using System;
 using System.Data.SqlClient;
+using System.IO;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Load_bank_files.Class
+namespace Load_bank_files.Class.deleteDBbase
 {
-	public static class deleteDBbase
+	public static class DeleteDBbase
 	{
-		public static void delBakns(int bank)
+		public static async Task DelBakns(int bank)
 		{
 			string bank_id = "";
 			switch (bank)
@@ -30,11 +32,11 @@ namespace Load_bank_files.Class
 			using (var sqlconnDest = new SqlConnection(variable_config.ConnStrgingBase))
 			{
 				SqlCommand commDel = new SqlCommand(comDel, sqlconnDest);
-
 				try
 				{
 					sqlconnDest.Open();
-					commDel.ExecuteNonQuery();
+					commDel.CommandTimeout = variable_config.timerProgressbar;
+					await Task.Factory.StartNew(() => commDel.ExecuteNonQuery());
 				}
 				catch (Exception ex)
 				{
@@ -44,6 +46,22 @@ namespace Load_bank_files.Class
 				{
 					sqlconnDest.Close();
 				}
+			}
+		}
+		public static async Task<bool> DeleteFile(string path)
+		{
+			string[] deleteDir = Directory.GetFiles(path, "*.xlsx");
+			try
+			{
+				foreach (string del in deleteDir)
+				{
+					await Task.Run(() => File.Delete(del));
+				}
+				return true;
+			}
+			catch (Exception)
+			{
+				return false;
 			}
 		}
 	}

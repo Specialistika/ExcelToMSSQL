@@ -1,17 +1,12 @@
-﻿using Load_bank_files.Forms;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Load_bank_files.Class.config;
 using System.Windows.Forms;
 
 namespace Load_bank_files.Class.GUI
 {
     public static class GUIController
     {
-        private static oneDayFiles _instance;
-        public static void setForm(oneDayFiles f)
+        private static Form _instance;
+        public static void setForm(Form f)
         {
             _instance = f;
         }
@@ -29,8 +24,11 @@ namespace Load_bank_files.Class.GUI
                 B.BeginInvoke(new MethodInvoker(() => B.Update()));
             else 
             B.BeginInvoke(new MethodInvoker(() => B.Text = TextList));
-			if (TextList == "")
+			if (TextList == "Clear")
+			{
 				B.BeginInvoke(new MethodInvoker(() => B.Clear()));
+				B.BeginInvoke(new MethodInvoker(() => B.Text = string.Empty));
+			}
 
 		}
         public static void countFileslistbox()
@@ -47,6 +45,23 @@ namespace Load_bank_files.Class.GUI
             ProgressBar P = (ProgressBar)_instance.Controls["threadProgressBar"];
             P.BeginInvoke(new MethodInvoker(() => P.Maximum = 10));
         }
+		public static void openDialog()
+		{
+			OpenFileDialog openFileDialog = new OpenFileDialog();
+			openFileDialog.InitialDirectory = variable_config.dirUploadFiles;
+			openFileDialog.Filter = variable_config.GetexpansionFile;
+			openFileDialog.FilterIndex = 2;
+			openFileDialog.Multiselect = true;
+			openFileDialog.RestoreDirectory = true;
+		}
 
-    }
+		//public static void circularProgress(bool enabled)
+		//{
+		//	CircularIndeterminateProgress.CircularIndeterminateProgress c = (CircularIndeterminateProgress.CircularIndeterminateProgress)_instance.Controls["circularProgressMain"];
+
+		//	//c.BeginInvoke(new MethodInvoker(() => c.IndicatorType = CircularIndeterminateProgress.CircularIndeterminateProgress.INDICATORTYPES.PULSED));
+		//}
+
+		
+	}
 }

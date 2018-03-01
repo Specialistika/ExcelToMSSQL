@@ -4,7 +4,6 @@ using System.Data.OleDb;
 using System.Data.SqlClient;
 using Load_bank_files.Forms;
 using Load_bank_files.Class.config;
-using System.Threading.Tasks;
 
 namespace Load_bank_files.Class.DataOneDoc
 {

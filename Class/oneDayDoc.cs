@@ -13,7 +13,7 @@ namespace Load_bank_files.Class.DayDoc
 {
 	public partial class oneDaydoc
     {
-		private static oneDayFiles dayFiles = oneDayFiles.GetInstance();
+		private static UploadDayFiles dayFiles = UploadDayFiles.GetInstance();
 
 		public static void OneDayfiles(string filesnames)
 		{

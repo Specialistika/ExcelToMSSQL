@@ -2,25 +2,37 @@
 using Load_bank_files.Class.GUI;
 using Load_bank_files.Data;
 using System;
-using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
+using Load_bank_files.Class.deleteDBbase;
 
 namespace Load_bank_files.Forms
 {
 	public partial class MineGenegalForms : Form
-    {
+	{
 		private WorksBankForm wbf = WorksBankForm.GetInstance();
-
-		private oneDayFiles odf = oneDayFiles.GetInstance();
-
+		private UploadDayFiles odf = UploadDayFiles.GetInstance();
+		private delegate void circularObject_();
 		private static int TypeFile;
-
+		//static CancellationTokenSource cts;
 		public static int TypeFile_ => TypeFile;
 
 		public MineGenegalForms()
-        {
-            InitializeComponent();
-        }
+		{
+			InitializeComponent();
+			GUI_circular();
+		}
+
+		public void GUI_circular()
+		{
+			circularProgressMain.BackgroundColor = System.Drawing.SystemColors.Control;
+			circularProgressMain.ControlWidthHeight = 20;
+			circularProgressMain.CirclesCount = 5;
+			circularProgressMain.IndicatorDiameter = 5;
+			circularProgressMain.IndicatorColor = System.Drawing.Color.BlueViolet;
+			circularProgressMain.Animate = false;
+			circularProgressMain.Visible = false;
+		}
 
         private void slectedUploadBanksToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -42,13 +54,13 @@ namespace Load_bank_files.Forms
         {
             if (TypeFile_ != 0)
             {
-                var odf = oneDayFiles.GetInstance();
+                var odf = UploadDayFiles.GetInstance();
 
 				if (SearchForm(odf) == false)
 				{
-					if (oneDayFiles.GetInstance().IsDisposed)
+					if (UploadDayFiles.GetInstance().IsDisposed)
 					{
-						new oneDayFiles
+						new UploadDayFiles
 						{
 							MdiParent = this
 						}.Show();
@@ -67,38 +79,17 @@ namespace Load_bank_files.Forms
             }
         }
 
-        private void однодневкиСБToolStripMenuItem_Click(object sender, EventArgs e)
+        private void однодневкиСБToolStripMenuItem_ClickAsync(object sender, EventArgs e)
         {
-            try
-            {
-                Thread TRtempSB = new Thread(delegate ()
-                {
-                    using (var cleanDB = new xlsx_baseEntities())
-                    {
-                        try
-                        {
-                            cleanDB.Database.ExecuteSqlCommand("TRUNCATE TABLE [tempDbase]");
-                        }
-                        catch (Exception x)
-                        {
-                            MessageBox.Show(x.Message);
-                        }
-                    }
-                });
-                TRtempSB.Start();
+			try
+			{
+				Task<int> y = Task.Factory.StartNew(() => DeleteTempTable()).GetAwaiter().GetResult();
 
-                while (TRtempSB.IsAlive)
-                    Application.DoEvents();
-                string confirmTRbase = TRtempSB.ThreadState.ToString();
+				MessageBox.Show("Удаление данных закончено");
 
-                if (confirmTRbase == "Stopped")
-                {
-                    MessageBox.Show("Удаление данных закончено");
-                }
-                TRtempSB.Join();
 				if (odf != null && !odf.IsDisposed && odf.Visible)
 				{
-					GUIController.countFilesTextBox("");
+					GUIController.countFilesTextBox("Clear");
 					GUIController.countFileslistbox();
 					odf.DtGridOneDay_load();
 				}
@@ -108,13 +99,22 @@ namespace Load_bank_files.Forms
                 MessageBox.Show(x.Message);
             }
         }
+		private async static Task<int> DeleteTempTable()
+		{
+			int result = 0;
 
-        private void сбарбанкToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-			deleteRow(1);
+			using (var cleanDB = new xlsx_baseEntities())
+			{
+				return await Task.Run(() => { return result = cleanDB.Database.ExecuteSqlCommand("TRUNCATE TABLE [tempDbase]"); });
+			}
 		}
 
-        private void loadGPBBankToolStripMenuItem_Click(object sender, EventArgs e)
+		private async void сбарбанкToolStripMenuItem_ClickAsync(object sender, EventArgs e)
+		{
+			await DeleteRow(1);
+		}
+
+		private void loadGPBBankToolStripMenuItem_Click(object sender, EventArgs e)
         {
             wbf.excelLoadTempGpbKld();
         }
@@ -141,7 +141,6 @@ namespace Load_bank_files.Forms
 			}
 			return false;
 		}
-
 
 		private void конфигурацияToolStripMenuItem_Click(object sender, EventArgs e)
 		{
@@ -191,7 +190,6 @@ namespace Load_bank_files.Forms
             TypeFile = 3;
             this.Text = "Стандартный формат Сбербанка";
         }
-
         private void работаСФайламиБанковToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var tEx = TrimExcelForm.GetInstance();
@@ -226,49 +224,39 @@ namespace Load_bank_files.Forms
 			this.Text = "Стандартный формат ГПБ банка КЛД";
 		}
 
-		private void гПБКЛДToolStripMenuItem_Click(object sender, EventArgs e)
+		private async void гПБКЛДToolStripMenuItem_ClickAsync(object sender, EventArgs e)
 		{
-			deleteRow(5);
+			await DeleteRow(5);
 		}
-		private void deleteRow(int bank)
+
+		private async Task<bool> DeleteRow(int bank)
 		{
+			circularProgressMain.Visible = true;
+			circularProgressMain.Animate = true;
 			try
 			{
-				Thread TRbase = new Thread(delegate ()
-				{
-					using (var cleanDB = new xlsx_baseEntities())
-					{
-						try
-						{
-							deleteDBbase.delBakns(bank);
-						}
-						catch (Exception x)
-						{
-							MessageBox.Show(x.Message);
-						}
-					}
-				});
-				TRbase.Start();
+				await Task.Factory.StartNew(() => DeleteDBbase.DelBakns(bank)).GetAwaiter().GetResult();
 
-				while (TRbase.IsAlive)
-					Application.DoEvents();
-				string confirmTRbase = TRbase.ThreadState.ToString();
-
-				if (confirmTRbase == "Stopped")
-				{
-					MessageBox.Show("Удаление данных закончено");
-				}
-				TRbase.Join();
+				circularProgressMain.Visible = false;
+				circularProgressMain.Animate = false;
+				MessageBox.Show("Удаление данных закончено");
+				return true;
 			}
 			catch (Exception x)
 			{
-				MessageBox.Show(x.Message);
+				MessageBox.Show("Ошибка: ", x.Message);
+				return false;
 			}
 		}
 
-		private void гПБМСКToolStripMenuItem_Click(object sender, EventArgs e)
+		private async void гПБМСКToolStripMenuItem_ClickAsync(object sender, EventArgs e)
 		{
-			deleteRow(4);
+			await DeleteRow(4);
+		}
+
+		private async void загрузкаФайловSAPToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			await UploadSap.UploadSapAsync();
 		}
 	}
 }

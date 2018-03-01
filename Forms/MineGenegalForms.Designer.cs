@@ -43,11 +43,8 @@
 			this.гПБМСКToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.работаСФайламиБанковToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.slectedUploadBanksToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.uploadBankToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.oneDayFilesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.workedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.loadGPBBankToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.loadGPBMSKToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.loadSberbankToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.форматОднодневокToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.внутреннийФорматБанкаToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -55,6 +52,8 @@
 			this.форматФайлаГПБToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.основнойФорматToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.основнойФорматФайлаКЛДToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.circularProgressMain = new CircularIndeterminateProgress.CircularIndeterminateProgress();
+			this.загрузкаФайловSAPToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuStrip1.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -77,14 +76,14 @@
 			this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.exitToolStripMenuItem});
 			this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-			this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
-			this.fileToolStripMenuItem.Text = "File";
+			this.fileToolStripMenuItem.Size = new System.Drawing.Size(48, 20);
+			this.fileToolStripMenuItem.Text = "Файл";
 			// 
 			// exitToolStripMenuItem
 			// 
 			this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-			this.exitToolStripMenuItem.Size = new System.Drawing.Size(92, 22);
-			this.exitToolStripMenuItem.Text = "Exit";
+			this.exitToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.exitToolStripMenuItem.Text = "Выход";
 			this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
 			// 
 			// toolsToolStripMenuItem
@@ -92,8 +91,8 @@
 			this.toolsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.конфигурацияToolStripMenuItem});
 			this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
-			this.toolsToolStripMenuItem.Size = new System.Drawing.Size(48, 20);
-			this.toolsToolStripMenuItem.Text = "Tools";
+			this.toolsToolStripMenuItem.Size = new System.Drawing.Size(95, 20);
+			this.toolsToolStripMenuItem.Text = "Инструменты";
 			// 
 			// конфигурацияToolStripMenuItem
 			// 
@@ -109,15 +108,15 @@
             this.очисткаТаблицСДаннымиБанковToolStripMenuItem,
             this.работаСФайламиБанковToolStripMenuItem});
 			this.seToolStripMenuItem.Name = "seToolStripMenuItem";
-			this.seToolStripMenuItem.Size = new System.Drawing.Size(56, 20);
-			this.seToolStripMenuItem.Text = "Service";
+			this.seToolStripMenuItem.Size = new System.Drawing.Size(59, 20);
+			this.seToolStripMenuItem.Text = "Сервис";
 			// 
 			// clearTableToolStripMenuItem
 			// 
 			this.clearTableToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.однодневкиСБToolStripMenuItem});
 			this.clearTableToolStripMenuItem.Name = "clearTableToolStripMenuItem";
-			this.clearTableToolStripMenuItem.Size = new System.Drawing.Size(267, 22);
+			this.clearTableToolStripMenuItem.Size = new System.Drawing.Size(319, 22);
 			this.clearTableToolStripMenuItem.Text = "Очистка временных таблиц";
 			// 
 			// однодневкиСБToolStripMenuItem
@@ -125,7 +124,7 @@
 			this.однодневкиСБToolStripMenuItem.Name = "однодневкиСБToolStripMenuItem";
 			this.однодневкиСБToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
 			this.однодневкиСБToolStripMenuItem.Text = "Однодневки";
-			this.однодневкиСБToolStripMenuItem.Click += new System.EventHandler(this.однодневкиСБToolStripMenuItem_Click);
+			this.однодневкиСБToolStripMenuItem.Click += new System.EventHandler(this.однодневкиСБToolStripMenuItem_ClickAsync);
 			// 
 			// очисткаТаблицСДаннымиБанковToolStripMenuItem
 			// 
@@ -134,7 +133,7 @@
             this.гПБКЛДToolStripMenuItem,
             this.гПБМСКToolStripMenuItem});
 			this.очисткаТаблицСДаннымиБанковToolStripMenuItem.Name = "очисткаТаблицСДаннымиБанковToolStripMenuItem";
-			this.очисткаТаблицСДаннымиБанковToolStripMenuItem.Size = new System.Drawing.Size(267, 22);
+			this.очисткаТаблицСДаннымиБанковToolStripMenuItem.Size = new System.Drawing.Size(319, 22);
 			this.очисткаТаблицСДаннымиБанковToolStripMenuItem.Text = "Очистка таблиц с данными банков";
 			// 
 			// сбарбанкToolStripMenuItem
@@ -142,77 +141,54 @@
 			this.сбарбанкToolStripMenuItem.Name = "сбарбанкToolStripMenuItem";
 			this.сбарбанкToolStripMenuItem.Size = new System.Drawing.Size(128, 22);
 			this.сбарбанкToolStripMenuItem.Text = "Сбарбанк";
-			this.сбарбанкToolStripMenuItem.Click += new System.EventHandler(this.сбарбанкToolStripMenuItem_Click);
+			this.сбарбанкToolStripMenuItem.Click += new System.EventHandler(this.сбарбанкToolStripMenuItem_ClickAsync);
 			// 
 			// гПБКЛДToolStripMenuItem
 			// 
 			this.гПБКЛДToolStripMenuItem.Name = "гПБКЛДToolStripMenuItem";
 			this.гПБКЛДToolStripMenuItem.Size = new System.Drawing.Size(128, 22);
 			this.гПБКЛДToolStripMenuItem.Text = "ГПБ-КЛД";
-			this.гПБКЛДToolStripMenuItem.Click += new System.EventHandler(this.гПБКЛДToolStripMenuItem_Click);
+			this.гПБКЛДToolStripMenuItem.Click += new System.EventHandler(this.гПБКЛДToolStripMenuItem_ClickAsync);
 			// 
 			// гПБМСКToolStripMenuItem
 			// 
 			this.гПБМСКToolStripMenuItem.Name = "гПБМСКToolStripMenuItem";
 			this.гПБМСКToolStripMenuItem.Size = new System.Drawing.Size(128, 22);
 			this.гПБМСКToolStripMenuItem.Text = "ГПБ-МСК";
-			this.гПБМСКToolStripMenuItem.Click += new System.EventHandler(this.гПБМСКToolStripMenuItem_Click);
+			this.гПБМСКToolStripMenuItem.Click += new System.EventHandler(this.гПБМСКToolStripMenuItem_ClickAsync);
 			// 
 			// работаСФайламиБанковToolStripMenuItem
 			// 
 			this.работаСФайламиБанковToolStripMenuItem.Name = "работаСФайламиБанковToolStripMenuItem";
-			this.работаСФайламиБанковToolStripMenuItem.Size = new System.Drawing.Size(267, 22);
-			this.работаСФайламиБанковToolStripMenuItem.Text = "Работа с файлами банков";
+			this.работаСФайламиБанковToolStripMenuItem.Size = new System.Drawing.Size(319, 22);
+			this.работаСФайламиБанковToolStripMenuItem.Text = "Подготовка файлов с несколькими листами";
 			this.работаСФайламиБанковToolStripMenuItem.Click += new System.EventHandler(this.работаСФайламиБанковToolStripMenuItem_Click);
 			// 
 			// slectedUploadBanksToolStripMenuItem
 			// 
 			this.slectedUploadBanksToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.uploadBankToolStripMenuItem,
-            this.oneDayFilesToolStripMenuItem});
+            this.oneDayFilesToolStripMenuItem,
+            this.загрузкаФайловSAPToolStripMenuItem});
 			this.slectedUploadBanksToolStripMenuItem.Name = "slectedUploadBanksToolStripMenuItem";
-			this.slectedUploadBanksToolStripMenuItem.Size = new System.Drawing.Size(75, 20);
-			this.slectedUploadBanksToolStripMenuItem.Text = "WorkForm";
+			this.slectedUploadBanksToolStripMenuItem.Size = new System.Drawing.Size(79, 20);
+			this.slectedUploadBanksToolStripMenuItem.Text = "Обработка";
 			this.slectedUploadBanksToolStripMenuItem.Click += new System.EventHandler(this.slectedUploadBanksToolStripMenuItem_Click);
-			// 
-			// uploadBankToolStripMenuItem
-			// 
-			this.uploadBankToolStripMenuItem.Name = "uploadBankToolStripMenuItem";
-			this.uploadBankToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
-			this.uploadBankToolStripMenuItem.Text = "UploadBank";
-			this.uploadBankToolStripMenuItem.Click += new System.EventHandler(this.uploadBankToolStripMenuItem_Click);
 			// 
 			// oneDayFilesToolStripMenuItem
 			// 
 			this.oneDayFilesToolStripMenuItem.Name = "oneDayFilesToolStripMenuItem";
-			this.oneDayFilesToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
-			this.oneDayFilesToolStripMenuItem.Text = "OneDayFiles";
+			this.oneDayFilesToolStripMenuItem.Size = new System.Drawing.Size(202, 22);
+			this.oneDayFilesToolStripMenuItem.Text = "Загрузка файлов банка";
 			this.oneDayFilesToolStripMenuItem.Click += new System.EventHandler(this.oneDayFilesToolStripMenuItem_Click);
 			// 
 			// workedToolStripMenuItem
 			// 
 			this.workedToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.loadGPBBankToolStripMenuItem,
-            this.loadGPBMSKToolStripMenuItem,
             this.loadSberbankToolStripMenuItem,
             this.форматФайлаГПБToolStripMenuItem});
 			this.workedToolStripMenuItem.Name = "workedToolStripMenuItem";
-			this.workedToolStripMenuItem.Size = new System.Drawing.Size(60, 20);
-			this.workedToolStripMenuItem.Text = "Worked";
-			// 
-			// loadGPBBankToolStripMenuItem
-			// 
-			this.loadGPBBankToolStripMenuItem.Name = "loadGPBBankToolStripMenuItem";
-			this.loadGPBBankToolStripMenuItem.Size = new System.Drawing.Size(216, 22);
-			this.loadGPBBankToolStripMenuItem.Text = "Загрузка фалов ГПБ-КЛД";
-			this.loadGPBBankToolStripMenuItem.Click += new System.EventHandler(this.loadGPBBankToolStripMenuItem_Click);
-			// 
-			// loadGPBMSKToolStripMenuItem
-			// 
-			this.loadGPBMSKToolStripMenuItem.Name = "loadGPBMSKToolStripMenuItem";
-			this.loadGPBMSKToolStripMenuItem.Size = new System.Drawing.Size(216, 22);
-			this.loadGPBMSKToolStripMenuItem.Text = "Загрузка фалов ГПБ-МСК";
-			this.loadGPBMSKToolStripMenuItem.Click += new System.EventHandler(this.loadGPBMSKToolStripMenuItem_Click);
+			this.workedToolStripMenuItem.Size = new System.Drawing.Size(91, 20);
+			this.workedToolStripMenuItem.Text = "Выбор банка";
 			// 
 			// loadSberbankToolStripMenuItem
 			// 
@@ -269,11 +245,28 @@
 			this.основнойФорматФайлаКЛДToolStripMenuItem.Text = "Основной формат файла КЛД";
 			this.основнойФорматФайлаКЛДToolStripMenuItem.Click += new System.EventHandler(this.основнойФорматФайлаКЛДToolStripMenuItem_Click);
 			// 
+			// circularProgressMain
+			// 
+			this.circularProgressMain.BackgroundColor = System.Drawing.SystemColors.Control;
+			this.circularProgressMain.Location = new System.Drawing.Point(376, 0);
+			this.circularProgressMain.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+			this.circularProgressMain.Name = "circularProgressMain";
+			this.circularProgressMain.Size = new System.Drawing.Size(22, 24);
+			this.circularProgressMain.TabIndex = 2;
+			// 
+			// загрузкаФайловSAPToolStripMenuItem
+			// 
+			this.загрузкаФайловSAPToolStripMenuItem.Name = "загрузкаФайловSAPToolStripMenuItem";
+			this.загрузкаФайловSAPToolStripMenuItem.Size = new System.Drawing.Size(202, 22);
+			this.загрузкаФайловSAPToolStripMenuItem.Text = "Загрузка файлов SAP";
+			this.загрузкаФайловSAPToolStripMenuItem.Click += new System.EventHandler(this.загрузкаФайловSAPToolStripMenuItem_Click);
+			// 
 			// MineGenegalForms
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(1010, 706);
+			this.Controls.Add(this.circularProgressMain);
 			this.Controls.Add(this.menuStrip1);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.IsMdiContainer = true;
@@ -296,15 +289,12 @@
         private System.Windows.Forms.ToolStripMenuItem seToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem slectedUploadBanksToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem uploadBankToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem oneDayFilesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem clearTableToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem однодневкиСБToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem очисткаТаблицСДаннымиБанковToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem сбарбанкToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem workedToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem loadGPBBankToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem loadGPBMSKToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem loadSberbankToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem конфигурацияToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem форматОднодневокToolStripMenuItem;
@@ -316,5 +306,7 @@
 		private System.Windows.Forms.ToolStripMenuItem основнойФорматФайлаКЛДToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem гПБКЛДToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem гПБМСКToolStripMenuItem;
+		private CircularIndeterminateProgress.CircularIndeterminateProgress circularProgressMain;
+		private System.Windows.Forms.ToolStripMenuItem загрузкаФайловSAPToolStripMenuItem;
 	}
 }
