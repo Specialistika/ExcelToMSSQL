@@ -52,7 +52,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="CiricularIndeterminateProgress">
-      <HintPath>..\..\CircularProcess\CircularProcess\obj\Debug\CiricularIndeterminateProgress.dll</HintPath>
+      <HintPath>..\DLL\CiricularIndeterminateProgress.dll</HintPath>
     </Reference>
     <Reference Include="DocumentFormat.OpenXml, Version=2.8.1.0, Culture=neutral, PublicKeyToken=8fb06cb64d019a17, processorArchitecture=MSIL">
       <HintPath>packages\DocumentFormat.OpenXml.2.8.1\lib\net40\DocumentFormat.OpenXml.dll</HintPath>
@@ -116,14 +116,6 @@
     <Compile Include="Class\UploadSap.cs" />
     <Compile Include="Class\variable_config.cs" />
     <Compile Include="Class\selectBankFiles.cs" />
-    <Compile Include="D:\VSlabs\Projects\Load_banks\Mine_forms.cs">
-      <Link>Forms\Mine_forms.cs</Link>
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="D:\VSlabs\Projects\Load_banks\Mine_forms.Designer.cs">
-      <DependentUpon>Mine_forms.cs</DependentUpon>
-      <Link>Forms\Mine_forms.Designer.cs</Link>
-    </Compile>
     <Compile Include="Data\C__MigrationHistory.cs" />
     <Compile Include="Data\tempBase.cs" />
     <Compile Include="Data\tempDbase.cs">
@@ -186,10 +178,6 @@
       <DependentUpon>WorksBankForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="D:\VSlabs\Projects\Load_banks\Mine_forms.resx">
-      <DependentUpon>Mine_forms.cs</DependentUpon>
-      <Link>Forms\Mine_forms.resx</Link>
-    </EmbeddedResource>
     <EmbeddedResource Include="Forms\AddDelShopForm.resx">
       <DependentUpon>AddDelShopForm.cs</DependentUpon>
     </EmbeddedResource>
