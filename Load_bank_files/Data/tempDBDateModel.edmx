@@ -1,0 +1,99 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="xlsx_baseModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="tempDbase">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="TimeT" Type="datetime" />
+          <Property Name="DateT" Type="datetime" />
+          <Property Name="Terminal" Type="varchar" MaxLength="50" />
+          <Property Name="Cardnum" Type="varchar" MaxLength="50" />
+          <Property Name="AutCode" Type="varchar" MaxLength="50" />
+          <Property Name="Sum" Type="varchar" MaxLength="50" />
+          <Property Name="Comis" Type="varchar" MaxLength="50" />
+          <Property Name="RRN" Type="varchar" MaxLength="50" />
+          <Property Name="Typ" Type="varchar" MaxLength="50" />
+          <Property Name="PS" Type="varchar" MaxLength="50" />
+          <Property Name="Emitent" Type="varchar" MaxLength="50" />
+        </EntityType>
+        <EntityContainer Name="xlsx_baseModelStoreContainer">
+          <EntitySet Name="tempDbase" EntityType="Self.tempDbase" Schema="dbo" store:Type="Tables" />
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="xlsx_baseModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityContainer Name="xlsx_baseEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="tempDbase" EntityType="xlsx_baseModel.tempDbase" />
+        </EntityContainer>
+        <EntityType Name="tempDbase">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="TimeT" Type="DateTime" Precision="3" />
+          <Property Name="DateT" Type="DateTime" Precision="3" />
+          <Property Name="Terminal" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Cardnum" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="AutCode" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Sum" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Comis" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="RRN" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Typ" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="PS" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Emitent" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+        </EntityType>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="xlsx_baseModelStoreContainer" CdmEntityContainer="xlsx_baseEntities">
+          <EntitySetMapping Name="tempDbase">
+            <EntityTypeMapping TypeName="xlsx_baseModel.tempDbase">
+              <MappingFragment StoreEntitySet="tempDbase">
+                <ScalarProperty Name="Emitent" ColumnName="Emitent" />
+                <ScalarProperty Name="PS" ColumnName="PS" />
+                <ScalarProperty Name="Typ" ColumnName="Typ" />
+                <ScalarProperty Name="RRN" ColumnName="RRN" />
+                <ScalarProperty Name="Comis" ColumnName="Comis" />
+                <ScalarProperty Name="Sum" ColumnName="Sum" />
+                <ScalarProperty Name="AutCode" ColumnName="AutCode" />
+                <ScalarProperty Name="Cardnum" ColumnName="Cardnum" />
+                <ScalarProperty Name="Terminal" ColumnName="Terminal" />
+                <ScalarProperty Name="DateT" ColumnName="DateT" />
+                <ScalarProperty Name="TimeT" ColumnName="TimeT" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
